@@ -9,6 +9,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { ObjectId } from 'mongodb';
 import { DetailCategoryDto } from './dto/detail-category.dto';
 import { PageListCategoryDto } from './dto/page-list-category.dto';
+import { DeleteCategoryDto } from './dto/delete-category.dto';
 
 @Injectable()
 export class CategoryService {
@@ -158,6 +159,38 @@ export class CategoryService {
             totalCount: total,
           },
         },
+      });
+    } catch (error) {
+      console.log('Error', error);
+
+      return BaseResponseData({
+        code: RESPONSE_CODE.ERROR,
+        message: 'Có lỗi xảy ra, vui lòng thử lại!',
+        data: null,
+      });
+    }
+  }
+
+  async delete(request: DeleteCategoryDto) {
+    try {
+      const category = await this.categoryRepository.findOne({
+        where: { _id: new ObjectId(request._id) },
+      });
+
+      if (!category) {
+        return BaseResponseData({
+          code: RESPONSE_CODE.ERROR,
+          message: 'Thể loại không tồn tại',
+          data: null,
+        });
+      }
+
+      await this.categoryRepository.delete({ _id: new ObjectId(request._id) });
+
+      return BaseResponseData({
+        code: RESPONSE_CODE.SUCCESS,
+        message: 'Thành công',
+        data: null,
       });
     } catch (error) {
       console.log('Error', error);
