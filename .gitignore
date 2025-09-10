@@ -46,6 +46,10 @@ lerna-debug.log*
 .temp
 .tmp
 
+# docker
+Dockerfile
+.dockerignore
+
 # Runtime data
 pids
 *.pid
