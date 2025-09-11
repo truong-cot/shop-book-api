@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoryModule } from './modules/category/category.module';
 import { UploadModule } from './modules/upload/upload.module';
+import { AuthorModule } from './modules/author/author.module';
 
 @Module({
   imports: [
@@ -28,6 +29,8 @@ import { UploadModule } from './modules/upload/upload.module';
     CategoryModule,
 
     UploadModule,
+
+    AuthorModule,
   ],
 
   controllers: [AppController],
