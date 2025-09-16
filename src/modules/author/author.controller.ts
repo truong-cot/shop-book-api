@@ -7,7 +7,7 @@ import { DetailAuthorDto } from './dto/detail-author.dto';
 import { PageListAuthorDto } from './dto/page-list-author.dto';
 import { DeleteAuthorDto } from './dto/delete-author.dto';
 
-@ApiTags('Author')
+@ApiTags('Author (Tác giả)')
 @Controller('author')
 export class AuthorController {
   constructor(private readonly authorService: AuthorService) {}

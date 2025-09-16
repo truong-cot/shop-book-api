@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoryModule } from './modules/category/category.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { AuthorModule } from './modules/author/author.module';
+import { PublishingHouseModule } from './modules/publishing-house/publishing-house.module';
 
 @Module({
   imports: [
@@ -31,6 +32,8 @@ import { AuthorModule } from './modules/author/author.module';
     UploadModule,
 
     AuthorModule,
+
+    PublishingHouseModule,
   ],
 
   controllers: [AppController],

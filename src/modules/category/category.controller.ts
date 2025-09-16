@@ -7,7 +7,7 @@ import { DetailCategoryDto } from './dto/detail-category.dto';
 import { PageListCategoryDto } from './dto/page-list-category.dto';
 import { DeleteCategoryDto } from './dto/delete-category.dto';
 
-@ApiTags('Category')
+@ApiTags('Category (Thể loại)')
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
