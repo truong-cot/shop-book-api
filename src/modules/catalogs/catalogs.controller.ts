@@ -19,7 +19,7 @@ export class CatalogsController {
     return this.catalogsService.getCatalogCategory();
   }
 
-  @Get('publishingHouses')
+  @Get('publishing-houses')
   @ApiOperation({ summary: 'Danh sách nhà xuất bản' })
   getCatalogPublishingHouse() {
     return this.catalogsService.getCatalogPublishingHouse();

@@ -19,4 +19,28 @@ export class PageListBookDto {
   @IsOptional()
   @IsString()
   keyword: string;
+
+  @ApiProperty({
+    example: '',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  author_id: string;
+
+  @ApiProperty({
+    example: '',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  category_id: string;
+
+  @ApiProperty({
+    example: '',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  publishing_house_id: string;
 }

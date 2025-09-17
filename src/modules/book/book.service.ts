@@ -12,6 +12,7 @@ import { ObjectId } from 'mongodb';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { DeleteBookDto } from './dto/delete-book.dto';
 import { DetailBookDto } from './dto/detail-book.dto';
+import { PageListBookDto } from './dto/page-list-book.dto';
 
 @Injectable()
 export class BookService {
@@ -278,6 +279,123 @@ export class BookService {
           author,
           category,
           publishingHouse,
+        },
+      });
+    } catch (error) {
+      console.log('Error', error);
+
+      return BaseResponseData({
+        code: RESPONSE_CODE.ERROR,
+        message: 'Có lỗi xảy ra, vui lòng thử lại!',
+        data: null,
+      });
+    }
+  }
+
+  async getPageList(request: PageListBookDto) {
+    try {
+      const {
+        page,
+        pageSize,
+        keyword,
+        author_id,
+        category_id,
+        publishing_house_id,
+      } = request;
+
+      const query: any = {};
+
+      if (keyword) query.$or = [{ name: { $regex: keyword, $options: 'i' } }];
+      if (author_id) query.author_id = new ObjectId(author_id);
+      if (category_id) query.category_id = new ObjectId(category_id);
+      if (publishing_house_id)
+        query.publishing_house_id = new ObjectId(publishing_house_id);
+
+      const [items, total] = await Promise.all([
+        this.bookRepository
+          .aggregate([
+            {
+              $match: query,
+            },
+            { $sort: { createdAt: -1 } },
+            { $skip: (page - 1) * pageSize },
+            { $limit: pageSize },
+            {
+              $lookup: {
+                from: '_tb_author',
+                localField: 'author_id',
+                foreignField: '_id',
+                as: 'author',
+              },
+            },
+            { $unwind: { path: '$author', preserveNullAndEmptyArrays: true } },
+            {
+              $lookup: {
+                from: '_tb_category',
+                localField: 'category_id',
+                foreignField: '_id',
+                as: 'category',
+              },
+            },
+            {
+              $unwind: { path: '$category', preserveNullAndEmptyArrays: true },
+            },
+            {
+              $lookup: {
+                from: '_tb_publishing_house',
+                localField: 'publishing_house_id',
+                foreignField: '_id',
+                as: 'publishingHouse',
+              },
+            },
+            {
+              $unwind: {
+                path: '$publishingHouse',
+                preserveNullAndEmptyArrays: true,
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                thumbnail: 1,
+                price: 1,
+                publishedDate: 1,
+                pageCount: 1,
+                weight: 1,
+                length: 1,
+                width: 1,
+                height: 1,
+                type: 1,
+                createdAt: 1,
+                updatedAt: 1,
+                author: {
+                  _id: 1,
+                  name: 1,
+                  avatar: 1,
+                  gender: 1,
+                  birthday: 1,
+                  description: 1,
+                },
+                category: { _id: 1, name: 1, image: 1, description: 1 },
+                publishingHouse: { _id: 1, name: 1, description: 1 },
+              },
+            },
+          ])
+          .toArray(),
+
+        this.bookRepository.count(query),
+      ]);
+
+      return BaseResponseData({
+        code: RESPONSE_CODE.SUCCESS,
+        message: 'Thành công!',
+        data: {
+          items: items,
+          pagination: {
+            currentPage: page,
+            totalCount: total,
+          },
         },
       });
     } catch (error) {
