@@ -1,0 +1,195 @@
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Book } from './entities/book.entity';
+import { MongoRepository } from 'typeorm';
+import { CreateBookDto } from './dto/create-book.dto';
+import { BaseResponseData } from 'src/common/response.helper';
+import { RESPONSE_CODE } from 'src/configs/enum';
+import { Author } from '../author/entities/author.entity';
+import { Category } from '../category/entities/category.entity';
+import { PublishingHouse } from '../publishing-house/entities/publishing-house.entity';
+import { ObjectId } from 'mongodb';
+import { UpdateBookDto } from './dto/update-book.dto';
+
+@Injectable()
+export class BookService {
+  constructor(
+    @InjectRepository(Book)
+    private bookRepository: MongoRepository<Book>,
+
+    @InjectRepository(Author)
+    private readonly authorRepository: MongoRepository<Author>,
+
+    @InjectRepository(Category)
+    private readonly categoryRepository: MongoRepository<Category>,
+
+    @InjectRepository(PublishingHouse)
+    private readonly publishingHouseRepository: MongoRepository<PublishingHouse>,
+  ) {}
+
+  async create(request: CreateBookDto) {
+    try {
+      const category = await this.categoryRepository.findOne({
+        where: { _id: new ObjectId(request.category_id) },
+      });
+
+      if (!category) {
+        return BaseResponseData({
+          code: RESPONSE_CODE.ERROR,
+          message: 'Thể loại không tồn tại!',
+          data: null,
+        });
+      }
+
+      const author = await this.authorRepository.findOne({
+        where: { _id: new ObjectId(request.author_id) },
+      });
+
+      if (!author) {
+        return BaseResponseData({
+          code: RESPONSE_CODE.ERROR,
+          message: 'Tác giả không tồn tại!',
+          data: null,
+        });
+      }
+
+      const publishingHouse = await this.publishingHouseRepository.findOne({
+        where: { _id: new ObjectId(request.publishing_house_id) },
+      });
+      if (!publishingHouse) {
+        return BaseResponseData({
+          code: RESPONSE_CODE.ERROR,
+          message: 'Nhà xuất bản không tồn tại!',
+          data: null,
+        });
+      }
+
+      const existedName = await this.bookRepository.findOne({
+        where: { name: new RegExp(`^${request.name}$`, 'i') },
+      });
+
+      if (existedName) {
+        return BaseResponseData({
+          code: RESPONSE_CODE.ERROR,
+          message: 'Tên sách đã tồn tại',
+          data: null,
+        });
+      }
+
+      const newBook = this.bookRepository.create({
+        name: request.name,
+        thumbnail: request.thumbnail,
+        price: request.price,
+        pageCount: request.pageCount,
+        weight: request.weight,
+        length: request.length,
+        width: request.width,
+        height: request.height,
+        type: request.type,
+        publishedDate: new Date(request.publishedDate),
+        author_id: new ObjectId(request.author_id),
+        category_id: new ObjectId(request.category_id),
+        publishing_house_id: new ObjectId(request.publishing_house_id),
+      });
+
+      const savedBook = await this.bookRepository.save(newBook);
+
+      return BaseResponseData({
+        code: RESPONSE_CODE.SUCCESS,
+        message: 'Thêm sách thành công!',
+        data: savedBook,
+      });
+    } catch (error) {
+      console.log('Error', error);
+
+      return BaseResponseData({
+        code: RESPONSE_CODE.ERROR,
+        message: 'Có lỗi xảy ra, vui lòng thử lại!',
+        data: null,
+      });
+    }
+  }
+
+  async update(request: UpdateBookDto) {
+    try {
+      const book = await this.bookRepository.findOne({
+        where: { _id: new ObjectId(request._id) },
+      });
+
+      if (!book) {
+        return BaseResponseData({
+          code: RESPONSE_CODE.ERROR,
+          message: 'Sách không tồn tại',
+          data: null,
+        });
+      }
+
+      const category = await this.categoryRepository.findOne({
+        where: { _id: new ObjectId(request.category_id) },
+      });
+
+      if (!category) {
+        return BaseResponseData({
+          code: RESPONSE_CODE.ERROR,
+          message: 'Thể loại không tồn tại!',
+          data: null,
+        });
+      }
+
+      const author = await this.authorRepository.findOne({
+        where: { _id: new ObjectId(request.author_id) },
+      });
+
+      if (!author) {
+        return BaseResponseData({
+          code: RESPONSE_CODE.ERROR,
+          message: 'Tác giả không tồn tại!',
+          data: null,
+        });
+      }
+
+      const publishingHouse = await this.publishingHouseRepository.findOne({
+        where: { _id: new ObjectId(request.publishing_house_id) },
+      });
+      if (!publishingHouse) {
+        return BaseResponseData({
+          code: RESPONSE_CODE.ERROR,
+          message: 'Nhà xuất bản không tồn tại!',
+          data: null,
+        });
+      }
+
+      this.bookRepository.merge(book, {
+        name: request.name,
+        thumbnail: request.thumbnail,
+        price: request.price,
+        pageCount: request.pageCount,
+        weight: request.weight,
+        length: request.length,
+        width: request.width,
+        height: request.height,
+        type: request.type,
+        publishedDate: new Date(request.publishedDate!),
+        author_id: new ObjectId(request.author_id),
+        category_id: new ObjectId(request.category_id),
+        publishing_house_id: new ObjectId(request.publishing_house_id),
+      });
+
+      const updated = await this.bookRepository.save(book);
+
+      return BaseResponseData({
+        code: RESPONSE_CODE.SUCCESS,
+        message: 'Cập nhật sách thành công',
+        data: updated,
+      });
+    } catch (error) {
+      console.log('Error', error);
+
+      return BaseResponseData({
+        code: RESPONSE_CODE.ERROR,
+        message: 'Có lỗi xảy ra, vui lòng thử lại!',
+        data: null,
+      });
+    }
+  }
+}

@@ -6,7 +6,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { UploadService } from './upload.service';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Upload (Upload ảnh)')
@@ -17,6 +17,7 @@ export class UploadController {
   @Post('upload-single')
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
+  @ApiOperation({ summary: 'Upload 1 ảnh' })
   @ApiBody({
     schema: {
       type: 'object',
@@ -35,6 +36,7 @@ export class UploadController {
   @Post('upload-multiple')
   @UseInterceptors(FilesInterceptor('files'))
   @ApiConsumes('multipart/form-data')
+  @ApiOperation({ summary: 'Upload nhiều ảnh' })
   @ApiBody({
     schema: {
       type: 'object',

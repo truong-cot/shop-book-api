@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { BaseEntity } from 'src/common/base.entity';
 import { GENDER } from 'src/configs/enum';
-import { Column, Entity, ObjectIdColumn } from 'typeorm';
+import { Column, Entity, ObjectIdColumn, OneToMany } from 'typeorm';
 
 @Entity('_tb_author')
 export class Author extends BaseEntity {

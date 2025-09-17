@@ -7,6 +7,7 @@ import { CategoryModule } from './modules/category/category.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { AuthorModule } from './modules/author/author.module';
 import { PublishingHouseModule } from './modules/publishing-house/publishing-house.module';
+import { BookModule } from './modules/book/book.module';
 
 @Module({
   imports: [
@@ -34,6 +35,8 @@ import { PublishingHouseModule } from './modules/publishing-house/publishing-hou
     AuthorModule,
 
     PublishingHouseModule,
+
+    BookModule,
   ],
 
   controllers: [AppController],
