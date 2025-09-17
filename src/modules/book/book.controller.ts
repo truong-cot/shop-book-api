@@ -1,8 +1,10 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { BookService } from './book.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
+import { DeleteBookDto } from './dto/delete-book.dto';
+import { DetailBookDto } from './dto/detail-book.dto';
 
 @ApiTags('Book (Sách)')
 @Controller('book')
@@ -16,8 +18,20 @@ export class BookController {
   }
 
   @Post('update')
-  @ApiOperation({ summary: 'Chỉnh sửa mới sách' })
+  @ApiOperation({ summary: 'Chỉnh sửa sách' })
   update(@Body() request: UpdateBookDto) {
     return this.bookService.update(request);
+  }
+
+  @Get('detail/:_id')
+  @ApiOperation({ summary: 'Chi tiết sách' })
+  detail(@Param() params: DetailBookDto) {
+    return this.bookService.detail(params);
+  }
+
+  @Delete('delete/:_id')
+  @ApiOperation({ summary: 'Xóa sách' })
+  delete(@Param() params: DeleteBookDto) {
+    return this.bookService.delete(params);
   }
 }

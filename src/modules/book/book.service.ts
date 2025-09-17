@@ -10,6 +10,8 @@ import { Category } from '../category/entities/category.entity';
 import { PublishingHouse } from '../publishing-house/entities/publishing-house.entity';
 import { ObjectId } from 'mongodb';
 import { UpdateBookDto } from './dto/update-book.dto';
+import { DeleteBookDto } from './dto/delete-book.dto';
+import { DetailBookDto } from './dto/detail-book.dto';
 
 @Injectable()
 export class BookService {
@@ -181,6 +183,102 @@ export class BookService {
         code: RESPONSE_CODE.SUCCESS,
         message: 'Cập nhật sách thành công',
         data: updated,
+      });
+    } catch (error) {
+      console.log('Error', error);
+
+      return BaseResponseData({
+        code: RESPONSE_CODE.ERROR,
+        message: 'Có lỗi xảy ra, vui lòng thử lại!',
+        data: null,
+      });
+    }
+  }
+
+  async delete(request: DeleteBookDto) {
+    try {
+      const book = await this.bookRepository.findOne({
+        where: { _id: new ObjectId(request._id) },
+      });
+
+      if (!book) {
+        return BaseResponseData({
+          code: RESPONSE_CODE.ERROR,
+          message: 'Sách không tồn tại',
+          data: null,
+        });
+      }
+
+      await this.bookRepository.delete({ _id: new ObjectId(request._id) });
+
+      return BaseResponseData({
+        code: RESPONSE_CODE.SUCCESS,
+        message: 'Thành công',
+        data: null,
+      });
+    } catch (error) {
+      console.log('Error', error);
+
+      return BaseResponseData({
+        code: RESPONSE_CODE.ERROR,
+        message: 'Có lỗi xảy ra, vui lòng thử lại!',
+        data: null,
+      });
+    }
+  }
+
+  async detail(request: DetailBookDto) {
+    try {
+      const book = await this.bookRepository.findOne({
+        where: { _id: new ObjectId(request._id) },
+        relations: ['author', 'category', 'publishing_house'],
+      });
+
+      if (!book) {
+        return BaseResponseData({
+          code: RESPONSE_CODE.ERROR,
+          message: 'Sách không tồn tại',
+          data: null,
+        });
+      }
+
+      const [author, category, publishingHouse] = await Promise.all([
+        this.authorRepository.findOne({
+          where: { _id: new ObjectId(book.author_id) },
+          select: [
+            '_id',
+            'name',
+            'avatar',
+            'birthday',
+            'gender',
+            'description',
+          ],
+        }),
+        this.categoryRepository.findOne({
+          where: {
+            _id: new ObjectId(book.category_id),
+          },
+          select: ['_id', 'name', 'image', 'description'],
+        }),
+        this.publishingHouseRepository.findOne({
+          where: {
+            _id: new ObjectId(book.publishing_house_id),
+          },
+          select: ['_id', 'name', 'description'],
+        }),
+      ]);
+
+      const { author_id, category_id, publishing_house_id, ...rest } = book;
+
+      return BaseResponseData({
+        code: RESPONSE_CODE.SUCCESS,
+        message: 'Thành công',
+        data: {
+          ...rest,
+          author,
+          category,
+          publishingHouse,
+        },
       });
     } catch (error) {
       console.log('Error', error);
