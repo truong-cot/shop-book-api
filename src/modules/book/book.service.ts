@@ -298,6 +298,7 @@ export class BookService {
         page,
         pageSize,
         keyword,
+        type,
         author_id,
         category_id,
         publishing_house_id,
@@ -306,6 +307,7 @@ export class BookService {
       const query: any = {};
 
       if (keyword) query.$or = [{ name: { $regex: keyword, $options: 'i' } }];
+      if (type) query.type = type;
       if (author_id) query.author_id = new ObjectId(author_id);
       if (category_id) query.category_id = new ObjectId(category_id);
       if (publishing_house_id)

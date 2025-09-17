@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsOptional, IsString, Min } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
+import { TYPE_BOOK } from 'src/configs/enum';
 
 export class PageListBookDto {
   @ApiProperty({ example: 1 })
@@ -19,6 +20,14 @@ export class PageListBookDto {
   @IsOptional()
   @IsString()
   keyword: string;
+
+  @ApiProperty({
+    example: null,
+    required: false,
+  })
+  @IsOptional()
+  @IsEnum(TYPE_BOOK, { message: 'Loại sách không hợp lệ!' })
+  type: TYPE_BOOK | null;
 
   @ApiProperty({
     example: '',
