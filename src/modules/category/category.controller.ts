@@ -6,6 +6,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { DetailCategoryDto } from './dto/detail-category.dto';
 import { PageListCategoryDto } from './dto/page-list-category.dto';
 import { DeleteCategoryDto } from './dto/delete-category.dto';
+import { ListBookByCategoryDto } from './dto/list-book-by-category.dto';
 
 @ApiTags('Category (Thể loại)')
 @Controller('category')
@@ -40,5 +41,11 @@ export class CategoryController {
   @ApiOperation({ summary: 'Xóa thể loại' })
   delete(@Param() params: DeleteCategoryDto) {
     return this.categoryService.delete(params);
+  }
+
+  @Post('list-book-by-category')
+  @ApiOperation({ summary: 'Danh sách sách thuộc thể loại' })
+  listBookByCategory(@Body() request: ListBookByCategoryDto) {
+    return this.categoryService.listBookByCategory(request);
   }
 }

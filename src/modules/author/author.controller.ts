@@ -6,6 +6,7 @@ import { UpdateAuthorDto } from './dto/update-author.dto';
 import { DetailAuthorDto } from './dto/detail-author.dto';
 import { PageListAuthorDto } from './dto/page-list-author.dto';
 import { DeleteAuthorDto } from './dto/delete-author.dto';
+import { ListBookByAuthorDto } from './dto/list-book-by-author.dto';
 
 @ApiTags('Author (Tác giả)')
 @Controller('author')
@@ -40,5 +41,11 @@ export class AuthorController {
   @ApiOperation({ summary: 'Xóa tác giả' })
   delete(@Param() params: DeleteAuthorDto) {
     return this.authorService.delete(params);
+  }
+
+  @Post('list-book-by-author')
+  @ApiOperation({ summary: 'Danh sách sách thuộc tác giả' })
+  listBookByAuthor(@Body() request: ListBookByAuthorDto) {
+    return this.authorService.listBookByAuthor(request);
   }
 }

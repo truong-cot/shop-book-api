@@ -14,6 +14,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DetailPublishingHouseDto } from './dto/detail-publishing-house.dto';
 import { PageListPublishingHouseDto } from './dto/page-list-publishing-house.dto';
 import { DeletePublishingHouseDto } from './dto/delete-publishing-house.dto';
+import { ListBookByPublishingouseDto } from './dto/list-book-by-publishing-house.dto';
 
 @ApiTags('PublishingHouse (Nhà xuất bản)')
 @Controller('publishing-house')
@@ -50,5 +51,11 @@ export class PublishingHouseController {
   @ApiOperation({ summary: 'Xóa nhà xuất bản' })
   delete(@Param() params: DeletePublishingHouseDto) {
     return this.publishingHouseService.delete(params);
+  }
+
+  @Post('list-book-by-publishing-house')
+  @ApiOperation({ summary: 'Danh sách sách thuộc nhà xuất bản' })
+  listBookByPublishingHouse(@Body() request: ListBookByPublishingouseDto) {
+    return this.publishingHouseService.listBookByPublishingHouse(request);
   }
 }
