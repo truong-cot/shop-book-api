@@ -8,6 +8,7 @@ import { UploadModule } from './modules/upload/upload.module';
 import { AuthorModule } from './modules/author/author.module';
 import { PublishingHouseModule } from './modules/publishing-house/publishing-house.module';
 import { BookModule } from './modules/book/book.module';
+import { CatalogsModule } from './modules/catalogs/catalogs.module';
 
 @Module({
   imports: [
@@ -37,6 +38,8 @@ import { BookModule } from './modules/book/book.module';
     PublishingHouseModule,
 
     BookModule,
+
+    CatalogsModule,
   ],
 
   controllers: [AppController],
