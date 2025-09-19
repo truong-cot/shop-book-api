@@ -9,6 +9,8 @@ import { AuthorModule } from './modules/author/author.module';
 import { PublishingHouseModule } from './modules/publishing-house/publishing-house.module';
 import { BookModule } from './modules/book/book.module';
 import { CatalogsModule } from './modules/catalogs/catalogs.module';
+import { CartModule } from './modules/cart/cart.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -40,6 +42,10 @@ import { CatalogsModule } from './modules/catalogs/catalogs.module';
     BookModule,
 
     CatalogsModule,
+
+    CartModule,
+
+    UserModule,
   ],
 
   controllers: [AppController],

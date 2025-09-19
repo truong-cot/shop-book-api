@@ -232,7 +232,6 @@ export class BookService {
     try {
       const book = await this.bookRepository.findOne({
         where: { _id: new ObjectId(request._id) },
-        relations: ['author', 'category', 'publishing_house'],
       });
 
       if (!book) {
